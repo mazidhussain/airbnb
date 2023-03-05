@@ -4,6 +4,7 @@ const cors = require('cors');
 const { default: mongoose } = require('mongoose');
 const bycrypt = require('bcryptjs');
 const User = require('./models/User.js');
+const Place = require('./models/Place.js'); 
 const jwt = require('jsonwebtoken');
 const imageDownloader = require('image-downloader');
 const fs = require('fs');
@@ -105,5 +106,34 @@ app.post('/upload',photoMiddleware.array('photos',100),(req,res)=>{
         uploadedFiles.push(newPath.replace('uploads\\',''));
     }
     res.json(uploadedFiles);
+});
+
+// for new place add form data
+app.post('/places',(req,res)=>{
+    const {token} = req.cookies;
+    jwt.verify(token,jwtSecret,{},async (err,userData)=>{
+        const {title,address,addedPhotos,
+            description,perks,extraInfo,
+            checkIn,checkOut,maxGuests} = req.body;
+        if(err) throw err;
+        const placeDoc = await Place.create({
+            owner:userData.id,
+            title,address,addedPhotos,
+            description,perks,extraInfo,
+            checkIn,checkOut,maxGuests
+        });
+        res.json(placeDoc);
+    });
+});
+
+// for fectch data
+app.get('/places',(req,res)=>{
+    const {token} = req.cookies;
+    jwt.verify(token,jwtSecret,{},async (err,userData)=>{
+        if(err) throw err;
+        const {id} = userData;
+        res.json(await Place.find({owner:id}));
+    });
+
 });
 app.listen(4000);
