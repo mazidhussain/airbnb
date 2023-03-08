@@ -24,10 +24,10 @@ export default function PlacesPage() {
             </div>
             <div className="mt-4">
                 {places.length > 0 && places.map(place => (
-                    <Link to={'/account/places/'+place._id} className="flex gap-4 cursor-pointer bg-gray-200 p-4 rounded-2xl">
+                    <Link to={'/account/places/'+place._id} className="flex gap-4 mt-2 cursor-pointer bg-gray-200 p-4 rounded-2xl">
                         <div className="flex w-32 h-32 bg-gray-300 grow shrink-0">
                             {place.photos.length > 0 && (
-                                <img className="object-cover" src={'http://localhost:4000/uploads/'+place.photos[0]} alt="" />
+                                <img className="object-cover aspect-square" src={'http://localhost:4000/uploads/'+place.photos[0]} alt="" />
                             )}
                         </div>
                         <div className="grow-0 shrink">
