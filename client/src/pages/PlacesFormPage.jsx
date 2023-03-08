@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useAsyncError, useParams } from "react-router-dom";
 import Perks from '../Perks'
 import axios from "axios";
 import PhotosUploader from "../PhotosUploader";
@@ -15,6 +15,7 @@ export default function PlacesFormPage() {
     const [extraInfo, setExtraInfo] = useState('');
     const [checkIn, setCheckIn] = useState('');
     const [checkOut, setCheckOut] = useState('');
+    const [price,setPrice] = useState(100);
     const [maxGuests, setMaxGuests] = useState(1);
     const [redirectToPlaces, setRedirectToPlaces] = useState(false);
 
@@ -32,6 +33,7 @@ export default function PlacesFormPage() {
             setExtraInfo(data.extraInfo);
             setCheckIn(data.checkIn);
             setCheckOut(data.checkOut);
+            setPrice(data.price);
             setMaxGuests(data.maxGuests);
         });
     }, [id]);
@@ -49,7 +51,7 @@ export default function PlacesFormPage() {
         ev.preventDefault();
         const placeData = {title, address, addedPhotos,
             description, perks, extraInfo,
-            checkIn, checkOut, maxGuests};
+            checkIn, checkOut, maxGuests,price};
         if (id) {
             // Update
             await axios.put('/places',{
@@ -85,7 +87,7 @@ export default function PlacesFormPage() {
                 {preInput('Extra info', 'house rules, etc')}
                 <textarea value={extraInfo} onChange={ev => setExtraInfo(ev.target.value)} />
                 {preInput('Check in&out times', 'add check in and out times, remember to have some time window for cleaning the room between guests')}
-                <div className="grid sm:grid-cols-3 gap-2">
+                <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-2">
                     <div>
                         <h3 className="mt-2 -mb-1">Check in time</h3>
                         <input type="text" value={checkIn} onChange={ev => setCheckIn(ev.target.value)} placeholder="14" />
@@ -97,6 +99,10 @@ export default function PlacesFormPage() {
                     <div>
                         <h3 className="mt-2 -mb-1">Max guests numbers</h3>
                         <input type="number" value={maxGuests} onChange={ev => setMaxGuests(ev.target.value)} />
+                    </div>
+                    <div>
+                        <h3 className="mt-2 -mb-1">Price per night</h3>
+                        <input type="number" value={price} onChange={ev => setPrice(ev.target.value)} />
                     </div>
                 </div>
                 <button className="login my-4">Save</button>

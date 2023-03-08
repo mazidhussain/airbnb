@@ -114,13 +114,13 @@ app.post('/places',(req,res)=>{
     jwt.verify(token,jwtSecret,{},async (err,userData)=>{
         const {title,address,addedPhotos,
             description,perks,extraInfo,
-            checkIn,checkOut,maxGuests} = req.body;
+            checkIn,checkOut,maxGuests,price} = req.body;
         if(err) throw err;
         const placeDoc = await Place.create({
             owner:userData.id,
             title,address,photos:addedPhotos,
             description,perks,extraInfo,
-            checkIn,checkOut,maxGuests
+            checkIn,checkOut,maxGuests,price
         });
         res.json(placeDoc);
     });
@@ -147,7 +147,7 @@ app.put('/places',async(req,res)=>{
     const {
         id,title,address,addedPhotos,
         description,perks,extraInfo,
-        checkIn,checkOut,maxGuests
+        checkIn,checkOut,maxGuests,price
     } = req.body;
     jwt.verify(token,jwtSecret,{},async (err,userData)=>{
         const placeDoc = await Place.findById(id);
@@ -155,11 +155,16 @@ app.put('/places',async(req,res)=>{
         if(userData.id === placeDoc.owner.toString()){
             placeDoc.set({title,address,photos:addedPhotos,
                 description,perks,extraInfo,
-                checkIn,checkOut,maxGuests});
+                checkIn,checkOut,maxGuests,price});
             await placeDoc.save();
             res.json('updated successfully');
         }
     });
 });
 
+
+// for fetch data  in home page
+app.get('/places',async (req,res)=>{
+    res.json(await Place.find());
+}); 
 app.listen(4000);
