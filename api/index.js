@@ -5,6 +5,7 @@ const { default: mongoose } = require('mongoose');
 const bycrypt = require('bcryptjs');
 const User = require('./models/User.js');
 const Place = require('./models/Place.js'); 
+const Booking = require('./models/Booking.js');
 const jwt = require('jsonwebtoken');
 const imageDownloader = require('image-downloader');
 const fs = require('fs');
@@ -12,6 +13,7 @@ const multer = require('multer');
 mongoose.set("strictQuery", false);
 app.use(express.json());
 const cookieParser = require('cookie-parser');
+const { rejects } = require('assert');
 require('dotenv').config();
 
 app.use(cookieParser());
@@ -24,6 +26,16 @@ app.use(cors({
     origin:'http://127.0.0.1:5173'
 }));
 mongoose.connect(process.env.MONGO_URL);
+
+function getUserDataFromReq(req){
+    return new Promise((resolve,reject)=>{
+        jwt.verify(req.cookies.token,jwtSecret,{},async (err,userData)=>{
+            if(err) throw err;
+            resolve(userData);
+        });
+    });
+}
+
 app.get('/test',(req,res)=>{
     res.json('test ok');
 });
@@ -167,4 +179,25 @@ app.put('/places',async(req,res)=>{
 app.get('/places',async (req,res)=>{
     res.json(await Place.find());
 }); 
+
+//for booking submit
+app.post('/booking',async (req,res)=>{
+    const userData = await getUserDataFromReq(req);
+    const {place,checkIn,checkOut,numberOfGuests,name,phone,price} = req.body;
+    Booking.create({
+        place,checkIn,checkOut,numberOfGuests,name,phone,price,user:userData.id
+    }).then((doc)=>{
+        res.json(doc);
+    }).catch((err)=>{
+        throw err;
+    });
+
+});
+
+
+// for fetch bookings all
+app.get('/bookings',async(req,res)=>{
+    const userData = await getUserDataFromReq(req);
+    res.json(await Booking.find({user:userData.id }).populate('place'));
+});
 app.listen(4000);
