@@ -17,7 +17,7 @@ export default function PlaceGallery({ place }) {
                     </div>
                     {place?.photos?.length > 0 && place.photos.map(photo => (
                         <div>
-                            <img src={'https://airbnb-backend-j3cn.onrender.com/uploads/' + photo} alt="" />
+                            <img src={'http://localhost:4000/uploads/' + photo} alt="" />
                         </div>
                     ))}
                 </div>
@@ -30,17 +30,17 @@ export default function PlaceGallery({ place }) {
                 <div>
                     <div>
                         {place.photos?.[0] && (
-                            <img onClick={() => setShowAllPhoto(true)} className="aspect-square object-cover cursor-pointer" src={'https://airbnb-backend-j3cn.onrender.com/uploads/' + place.photos[0]} alt="" />
+                            <img onClick={() => setShowAllPhoto(true)} className="aspect-square object-cover cursor-pointer" src={'http://localhost:4000/uploads/' + place.photos[0]} alt="" />
                         )}
                     </div>
                 </div>
                 <div className="grid gap-2">
                     {place.photos?.[1] && (
-                        <img onClick={() => setShowAllPhoto(true)} className="aspect-square object-cover cursor-pointer" src={'https://airbnb-backend-j3cn.onrender.com/uploads/' + place.photos[1]} alt="" />
+                        <img onClick={() => setShowAllPhoto(true)} className="aspect-square object-cover cursor-pointer" src={'http://localhost:4000/uploads/' + place.photos[1]} alt="" />
                     )}
                     <div className="overflow-hidden">
                         {place.photos?.[2] && (
-                            <img onClick={() => setShowAllPhoto(true)} className="aspect-square object-cover cursor-pointer relative" src={'https://airbnb-backend-j3cn.onrender.com/uploads/' + place.photos[2]} alt="" />
+                            <img onClick={() => setShowAllPhoto(true)} className="aspect-square object-cover cursor-pointer relative" src={'http://localhost:4000/uploads/' + place.photos[2]} alt="" />
                         )}
                     </div>
                 </div>
